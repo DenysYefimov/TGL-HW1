@@ -2,6 +2,45 @@
 {
     internal class Program
     {
+        private static int GetFactorialOfANumber(int number)
+        {
+            return number == 0 ? 1 : Enumerable.Range(1, number).Aggregate((i, j) => i * j);
+        }
+
+        private static IEnumerable<int> GetFibonacciSequenceOfSize(int size)
+        {
+            var fibonacciSequence = new List<int>();
+
+            if (size == 0)
+            {
+                return fibonacciSequence;
+            }
+
+            fibonacciSequence.Add(1);
+            if (size == 1)
+            {
+                return fibonacciSequence;
+            }
+
+            fibonacciSequence.Add(1);
+            if (size == 2)
+            {
+                return fibonacciSequence;
+            }
+            else
+            {
+                var ending = new { a = 1, b = 1 };
+                fibonacciSequence.AddRange(Enumerable.Repeat(1, size - 2)
+                    .Select(element =>
+                    {
+                        var temporary = ending;
+                        ending = new { a = ending.b, b = ending.a + ending.b };
+                        return temporary.a + temporary.b;
+                    }));
+                return fibonacciSequence;
+            }
+        }
+
         static void Main(string[] args)
         {
             input:
@@ -20,42 +59,13 @@
                         throw new ArgumentException($"{number} is less than 0");
                     }
 
-                    if (number == 0)
-                    {
-                        Console.WriteLine("0! = 1");
-                        Console.WriteLine("Fibonacci sequence of zero size is empty");
-                        goto input;
-                    }
-
-                    Console.WriteLine($"{number}! = " + Enumerable.Range(1, number)
-                        .Aggregate((i, j) => i * j));
+                    Console.WriteLine($"{number}! = " + GetFactorialOfANumber(number));
 
                     Console.WriteLine($"Fibonacci sequence of size {number}:");
-                    var fibonacciSequence = new List<int> { 1 };
-                    if (number == 1)
+
+                    foreach (var element in GetFibonacciSequenceOfSize(number))
                     {
-                        Console.WriteLine(fibonacciSequence.First());
-                        goto input;
-                    }
-                    fibonacciSequence.Add(1);
-                    if (number == 2)
-                    {
-                        Console.WriteLine(fibonacciSequence.First() + "\n" + fibonacciSequence.Last());
-                    }
-                    else
-                    {
-                        var ending = new { a = 1, b = 1 };
-                        fibonacciSequence.AddRange(Enumerable.Repeat(1, number - 2)
-                            .Select(element =>
-                            {
-                                var temporary = ending;
-                                ending = new { a = ending.b, b = ending.a + ending.b };
-                                return temporary.a + temporary.b;
-                            }));
-                        foreach (var element in fibonacciSequence)
-                        {
-                            Console.WriteLine(element);
-                        }
+                        Console.WriteLine(element);
                     }
                 }
                 catch(ArgumentException argumentException)
