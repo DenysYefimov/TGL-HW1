@@ -41,23 +41,34 @@
             }
         }
 
+        private static int ValidateAndConvertToInt(string input)
+        {
+            if (!int.TryParse(input, out int number))
+            {
+                throw new ArgumentException($"{input} can't be converted to an integer");
+            }
+
+            if (number < 0)
+            {
+                throw new ArgumentException($"{number} is less than 0");
+            }
+
+            return number;
+        }
+
         static void Main(string[] args)
         {
-            input:
-            Console.Write("Enter number or \"exit\" to stop the program: ");
-            var numberString = Console.ReadLine();
-            while (numberString.ToLowerInvariant() != "exit")
+            while (true)
             {
+                Console.Write("Enter number or \"exit\" to stop the program: ");
+                var numberString = Console.ReadLine();
+                if (numberString.ToLowerInvariant() == "exit")
+                {
+                    break;
+                }
                 try
                 {
-                    if (!int.TryParse(numberString, out int number))
-                    {
-                        throw new ArgumentException($"{numberString} can't be converted to an integer");
-                    }
-                    if (number < 0)
-                    {
-                        throw new ArgumentException($"{number} is less than 0");
-                    }
+                    var number = ValidateAndConvertToInt(numberString);
 
                     Console.WriteLine($"{number}! = " + GetFactorialOfANumber(number));
 
@@ -81,7 +92,6 @@
                 {
                     Console.WriteLine("Please enter again!");
                 }
-                goto input;
             }
         }
     }
